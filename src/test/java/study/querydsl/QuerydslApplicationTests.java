@@ -1,11 +1,13 @@
 package study.querydsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
+import study.querydsl.entity.Hello;
+import study.querydsl.entity.QHello;
 
 import javax.persistence.EntityManager;
 
@@ -13,6 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@Commit
 class QuerydslApplicationTests {
 
 	@Autowired
@@ -20,19 +23,18 @@ class QuerydslApplicationTests {
 
 	@Test
 	void contextLoads() {
-		Verification verification = new Verification();
-		em.persist(verification);
+		Hello hello = new Hello();
+		em.persist(hello);
 
 		JPAQueryFactory query = new JPAQueryFactory(em);
 
-		QVerification qVerification = new QVerification("q");
+		QHello qHello = QHello.hello;
 
-		Verification result = query
-				.selectFrom(qVerification)
+		Hello result = query
+				.selectFrom(qHello)
 				.fetchOne();
 
-		assertThat(result).isEqualTo(verification);
-		assertThat(result.getId()).isEqualTo(verification.getId());
+		assertThat(result).isEqualTo(hello);
+		assertThat(result.getId()).isEqualTo(hello.getId());
 	}
-
 }
